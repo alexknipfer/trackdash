@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import type { User } from 'better-auth';
-import { authClient } from '#/lib/auth-client';
+import { authClient } from '#/lib/auth/auth-client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
