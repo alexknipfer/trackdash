@@ -8,7 +8,7 @@ export const getSpotifyProfile = createServerFn({ method: 'GET' }).handler(
 	}
 );
 
-export const getDashboardTopStats = createServerFn({ method: 'GET' }).handler(
+export const getTopStats = createServerFn({ method: 'GET' }).handler(
 	async () => {
 		const [topTracks, topArtists] = await Promise.all([
 			Spotify.getUsersTopTracks({ limit: 10 }),

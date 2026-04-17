@@ -8,10 +8,10 @@ import {
 	CardHeader,
 	CardTitle
 } from '#/components/ui/card';
-import { getDashboardTopStats } from '#/lib/spotify.functions';
+import { getTopStats } from '#/lib/spotify.functions';
 
 export const Route = createFileRoute('/_protected/dashboard')({
-	loader: async () => getDashboardTopStats(),
+	loader: async () => getTopStats(),
 	component: RouteComponent
 });
 
