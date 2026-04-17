@@ -14,14 +14,21 @@ const spotifyApi = ky.create({
 	hooks: {
 		beforeRequest: [
 			async ({ request }) => {
-				const { accessToken } = await auth.api.getAccessToken({
-					body: {
-						providerId: 'spotify'
-					},
-					headers: getRequestHeaders()
-				});
+				try {
+					const response = await auth.api.getAccessToken({
+						body: {
+							providerId: 'spotify'
+						},
+						headers: getRequestHeaders()
+					});
 
-				request.headers.set('Authorization', `Bearer ${accessToken}`);
+					request.headers.set(
+						'Authorization',
+						`Bearer ${response.accessToken}`
+					);
+				} catch (error) {
+					console.log('Error getting access token: ', error);
+				}
 			}
 		]
 	}
