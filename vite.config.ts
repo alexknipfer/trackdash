@@ -1,22 +1,23 @@
-import { devtools } from "@tanstack/devtools-vite";
-import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-
-import tsconfigPaths from "vite-tsconfig-paths";
-import { defineConfig } from "vite";
-import viteReact from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
+import tailwindcss from '@tailwindcss/vite';
+import { devtools } from '@tanstack/devtools-vite';
+import { tanstackStart } from '@tanstack/react-start/plugin/vite';
+import viteReact from '@vitejs/plugin-react';
+import { nitro } from 'nitro/vite';
+import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 const config = defineConfig({
-  server: {
-    host: "127.0.0.1",
-  },
-  plugins: [
-    devtools(),
-    tsconfigPaths({ projects: ["./tsconfig.json"] }),
-    tailwindcss(),
-    tanstackStart(),
-    viteReact(),
-  ],
+	server: {
+		host: '127.0.0.1'
+	},
+	plugins: [
+		devtools(),
+		tsconfigPaths({ projects: ['./tsconfig.json'] }),
+		tailwindcss(),
+		tanstackStart(),
+		viteReact(),
+		nitro()
+	]
 });
 
 export default config;
