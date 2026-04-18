@@ -17,11 +17,12 @@ export const Route = createFileRoute('/_protected/dashboard')({
 
 function RouteComponent() {
 	const data = Route.useLoaderData();
+	console.log('data: ', data);
 
 	return (
 		<div className="flex flex-row gap-2 px-3">
 			<Card className="w-full">
-				<CardHeader className="">
+				<CardHeader>
 					<CardAction>
 						<Button
 							variant="ghost"
@@ -40,7 +41,7 @@ function RouteComponent() {
 			</Card>
 			<Card className="w-full">
 				<CardHeader className="flex items-center justify-between">
-					<CardTitle className="flex items-center font-medium gap-2 text-foreground text-lg">
+					<CardTitle className="flex items-center font-medium gap-2 text-foreground">
 						<Music className="h-5 w-5 text-primary" />
 						Top Tracks
 					</CardTitle>
