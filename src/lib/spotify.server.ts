@@ -45,7 +45,7 @@ type GetUsersTopTracksOptions = {
 
 function getUsersTopTracks({
 	limit = 50,
-	range = 'long_term'
+	range = 'medium_term'
 }: GetUsersTopTracksOptions) {
 	return getTopStats<SpotifyTrack>({
 		type: 'tracks',
@@ -61,7 +61,7 @@ type GetUsersTopArtistsOptions = {
 
 function getUsersTopArtists({
 	limit = 50,
-	range = 'long_term'
+	range = 'medium_term'
 }: GetUsersTopArtistsOptions) {
 	return getTopStats<SpotifyArtist>({
 		type: 'artists',
