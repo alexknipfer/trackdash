@@ -57,12 +57,12 @@ export async function createSpotifyApiClient() {
 		getProfile: () => spotifyAuthorizedApi.get('me').json<SpotifyProfile>(),
 		getUsersTopTracks: ({
 			limit = 50,
-			range = 'long_term'
+			range = 'medium_term'
 		}: GetUsersTopItemsOptions) =>
 			getTopStats<SpotifyTrack>({ type: 'tracks', limit, range }),
 		getUsersTopArtists: ({
 			limit = 50,
-			range = 'long_term'
+			range = 'medium_term'
 		}: GetUsersTopItemsOptions) =>
 			getTopStats<SpotifyArtist>({ type: 'artists', limit, range })
 	};
