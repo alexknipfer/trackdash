@@ -1,6 +1,11 @@
 import { createServerFn } from '@tanstack/react-start';
-
+import z from 'zod';
 import { authorizeMiddleware, spotifyClientMiddleware } from '#/lib/middleware';
+import {
+	type SpotifyArtist,
+	type SpotifyPaginatedResponse,
+	spotifyTimeRangeSchema
+} from '#/types/spotify';
 
 export const getTopStats = createServerFn({ method: 'GET' })
 	.middleware([authorizeMiddleware, spotifyClientMiddleware])
@@ -15,3 +20,19 @@ export const getTopStats = createServerFn({ method: 'GET' })
 			topArtists
 		};
 	});
+
+export const getTopArtistsByRange = createServerFn({ method: 'GET' })
+	.middleware([authorizeMiddleware, spotifyClientMiddleware])
+	.inputValidator(
+		z.object({
+			range: spotifyTimeRangeSchema.optional().default('medium_term')
+		})
+	)
+	.handler(
+		({ context, data }): Promise<SpotifyPaginatedResponse<SpotifyArtist>> => {
+			return context.spotifyClient.getUsersTopArtists({
+				limit: 50,
+				range: data.range
+			});
+		}
+	);

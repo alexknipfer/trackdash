@@ -11,8 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProtectedDashboardRouteImport } from './routes/_protected.dashboard'
+import { Route as ProtectedDashboardIndexRouteImport } from './routes/_protected.dashboard.index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ProtectedDashboardArtistsRouteImport } from './routes/_protected.dashboard.artists'
 
 const ProtectedRoute = ProtectedRouteImport.update({
   id: '/_protected',
@@ -23,9 +24,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProtectedDashboardRoute = ProtectedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const ProtectedDashboardIndexRoute = ProtectedDashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
   getParentRoute: () => ProtectedRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -33,30 +34,45 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProtectedDashboardArtistsRoute =
+  ProtectedDashboardArtistsRouteImport.update({
+    id: '/dashboard/artists',
+    path: '/dashboard/artists',
+    getParentRoute: () => ProtectedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof ProtectedDashboardRoute
+  '/dashboard/artists': typeof ProtectedDashboardArtistsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard/': typeof ProtectedDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof ProtectedDashboardRoute
+  '/dashboard/artists': typeof ProtectedDashboardArtistsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard': typeof ProtectedDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_protected': typeof ProtectedRouteWithChildren
-  '/_protected/dashboard': typeof ProtectedDashboardRoute
+  '/_protected/dashboard/artists': typeof ProtectedDashboardArtistsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_protected/dashboard/': typeof ProtectedDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/api/auth/$'
+  fullPaths: '/' | '/dashboard/artists' | '/api/auth/$' | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/api/auth/$'
-  id: '__root__' | '/' | '/_protected' | '/_protected/dashboard' | '/api/auth/$'
+  to: '/' | '/dashboard/artists' | '/api/auth/$' | '/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/_protected'
+    | '/_protected/dashboard/artists'
+    | '/api/auth/$'
+    | '/_protected/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -81,11 +97,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_protected/dashboard': {
-      id: '/_protected/dashboard'
+    '/_protected/dashboard/': {
+      id: '/_protected/dashboard/'
       path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof ProtectedDashboardRouteImport
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof ProtectedDashboardIndexRouteImport
       parentRoute: typeof ProtectedRoute
     }
     '/api/auth/$': {
@@ -95,15 +111,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_protected/dashboard/artists': {
+      id: '/_protected/dashboard/artists'
+      path: '/dashboard/artists'
+      fullPath: '/dashboard/artists'
+      preLoaderRoute: typeof ProtectedDashboardArtistsRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
   }
 }
 
 interface ProtectedRouteChildren {
-  ProtectedDashboardRoute: typeof ProtectedDashboardRoute
+  ProtectedDashboardArtistsRoute: typeof ProtectedDashboardArtistsRoute
+  ProtectedDashboardIndexRoute: typeof ProtectedDashboardIndexRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
-  ProtectedDashboardRoute: ProtectedDashboardRoute,
+  ProtectedDashboardArtistsRoute: ProtectedDashboardArtistsRoute,
+  ProtectedDashboardIndexRoute: ProtectedDashboardIndexRoute,
 }
 
 const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
