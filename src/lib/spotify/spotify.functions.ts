@@ -25,7 +25,7 @@ export const getTopArtistsByRange = createServerFn({ method: 'GET' })
 	.middleware([authorizeMiddleware, spotifyClientMiddleware])
 	.inputValidator(
 		z.object({
-			range: spotifyTimeRangeSchema.optional().default('medium_term')
+			range: spotifyTimeRangeSchema
 		})
 	)
 	.handler(
