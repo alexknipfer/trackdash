@@ -69,7 +69,7 @@ function PendingComponent() {
 
 export const Route = createFileRoute('/_protected/dashboard/artists')({
 	validateSearch: z.object({
-		time_range: spotifyTimeRangeSchema.optional().default('medium_term')
+		time_range: spotifyTimeRangeSchema.optional().default('long_term')
 	}),
 	loaderDeps: ({ search: { time_range } }) => ({ time_range }),
 	loader: async ({ deps: { time_range } }) => {
