@@ -1,14 +1,76 @@
-export type SpotifyTimeRange = 'long_term' | 'medium_term' | 'short_term';
+import { z } from 'zod';
 
-export interface SpotifyTokenResponse {
-	access_token: string;
-	token_type: string;
-	expires_in: number;
-	refresh_token: string;
-	scope: string;
+export const spotifyTimeRangeSchema = z.enum([
+	'long_term',
+	'medium_term',
+	'short_term'
+]);
+export const spotifyTimeRangeOptions = spotifyTimeRangeSchema.options;
+export type SpotifyTimeRange = z.infer<typeof spotifyTimeRangeSchema>;
+
+export const externalUrlsSchema = z.object({
+	spotify: z.string()
+});
+export type ExternalUrls = z.infer<typeof externalUrlsSchema>;
+
+export const followersSchema = z.object({
+	href: z.null(),
+	total: z.number()
+});
+export type Followers = z.infer<typeof followersSchema>;
+
+export const spotifyImageSchema = z.object({
+	height: z.number(),
+	url: z.string(),
+	width: z.number()
+});
+export type SpotifyImage = z.infer<typeof spotifyImageSchema>;
+
+export const typeSchema = z.enum(['artist']);
+export type Type = z.infer<typeof typeSchema>;
+
+export const externalIDSSchema = z.object({
+	isrc: z.string()
+});
+export type ExternalIDS = z.infer<typeof externalIDSSchema>;
+
+export const spotifyCursorSchema = z.object({
+	before: z.string(),
+	after: z.string()
+});
+export type SpotifyCursor = z.infer<typeof spotifyCursorSchema>;
+
+export const spotifyContextSchema = z.object({
+	external_urls: externalUrlsSchema,
+	href: z.string(),
+	type: z.string(),
+	uri: z.string()
+});
+export type SpotifyContext = z.infer<typeof spotifyContextSchema>;
+
+export const spotifyTokenResponseSchema = z.object({
+	access_token: z.string(),
+	token_type: z.string(),
+	expires_in: z.number(),
+	refresh_token: z.string(),
+	scope: z.string()
+});
+export type SpotifyTokenResponse = z.infer<typeof spotifyTokenResponseSchema>;
+
+export function createSpotifyPaginatedResponseSchema<
+	ItemType extends z.ZodTypeAny
+>(itemSchema: ItemType) {
+	return z.object({
+		items: z.array(itemSchema),
+		total: z.number(),
+		limit: z.number(),
+		offset: z.number(),
+		previous: z.null(),
+		href: z.string(),
+		next: z.string().nullable()
+	});
 }
-
-export interface SpotifyPaginatedResponse<ItemType> {
+export type SpotifyPaginatedResponse<ItemType> = {
 	items: ItemType[];
 	total: number;
 	limit: number;
@@ -16,186 +78,180 @@ export interface SpotifyPaginatedResponse<ItemType> {
 	previous: null;
 	href: string;
 	next: string | null;
-}
+};
 
-export interface SpotifyCursorPaginatedResponse<ItemType> {
+export function createSpotifyCursorPaginatedResponseSchema<
+	ItemType extends z.ZodTypeAny
+>(itemSchema: ItemType) {
+	return z.object({
+		items: z.array(itemSchema),
+		cursors: spotifyCursorSchema,
+		href: z.string(),
+		limit: z.number(),
+		next: z.string(),
+		total: z.number()
+	});
+}
+export type SpotifyCursorPaginatedResponse<ItemType> = {
 	items: ItemType[];
 	cursors: SpotifyCursor;
 	href: string;
 	limit: number;
 	next: string;
 	total: number;
-}
+};
 
-export interface SpotifyRecentlyPlayed {
-	context: SpotifyContext;
-	played_at: string;
-	track: SpotifyTrack;
-}
+export const artistSchema = z.object({
+	external_urls: externalUrlsSchema,
+	href: z.string(),
+	id: z.string(),
+	name: z.string(),
+	type: z.string(),
+	uri: z.string()
+});
+export type Artist = z.infer<typeof artistSchema>;
 
-export interface SpotifyProfile {
-	display_name: string;
-	email: string;
-	external_urls: ExternalUrls;
-	followers: Followers;
-	href: string;
-	id: string;
-	images: SpotifyImage[];
-	type: string;
-	uri: string;
-}
+export const spotifyArtistSchema = z.object({
+	external_urls: externalUrlsSchema,
+	followers: followersSchema,
+	genres: z.array(z.string()),
+	href: z.string(),
+	id: z.string(),
+	images: z.array(spotifyImageSchema),
+	name: z.string(),
+	popularity: z.number(),
+	type: typeSchema,
+	uri: z.string()
+});
+export type SpotifyArtist = z.infer<typeof spotifyArtistSchema>;
 
-export interface SpotifyArtist {
-	external_urls: ExternalUrls;
-	followers: Followers;
-	genres: string[];
-	href: string;
-	id: string;
-	images: SpotifyImage[];
-	name: string;
-	popularity: number;
-	type: Type;
-	uri: string;
-}
+export const spotifyAlbumSchema = z.object({
+	album_type: z.string(),
+	artists: z.array(artistSchema),
+	available_markets: z.array(z.string()),
+	external_urls: externalUrlsSchema,
+	href: z.string(),
+	id: z.string(),
+	images: z.array(spotifyImageSchema),
+	name: z.string(),
+	release_date: z.string(),
+	release_date_precision: z.string(),
+	total_tracks: z.number(),
+	type: z.string(),
+	uri: z.string()
+});
+export type SpotifyAlbum = z.infer<typeof spotifyAlbumSchema>;
 
-export interface Followers {
-	href: null;
-	total: number;
-}
+export const spotifyTrackSchema = z.object({
+	album: spotifyAlbumSchema,
+	artists: z.array(artistSchema),
+	available_markets: z.array(z.string()),
+	disc_number: z.number(),
+	duration_ms: z.number(),
+	explicit: z.boolean(),
+	external_ids: externalIDSSchema,
+	external_urls: externalUrlsSchema,
+	href: z.string(),
+	id: z.string(),
+	is_local: z.boolean(),
+	name: z.string(),
+	popularity: z.number(),
+	preview_url: z.string(),
+	track_number: z.number(),
+	type: z.string(),
+	uri: z.string()
+});
+export type SpotifyTrack = z.infer<typeof spotifyTrackSchema>;
 
-export interface ExternalUrls {
-	spotify: string;
-}
+export const spotifyProfileSchema = z.object({
+	display_name: z.string(),
+	email: z.string(),
+	external_urls: externalUrlsSchema,
+	followers: followersSchema,
+	href: z.string(),
+	id: z.string(),
+	images: z.array(spotifyImageSchema),
+	type: z.string(),
+	uri: z.string()
+});
+export type SpotifyProfile = z.infer<typeof spotifyProfileSchema>;
 
-export interface SpotifyImage {
-	height: number;
-	url: string;
-	width: number;
-}
+export const spotifyRecentlyPlayedSchema = z.object({
+	context: spotifyContextSchema,
+	played_at: z.string(),
+	track: spotifyTrackSchema
+});
+export type SpotifyRecentlyPlayed = z.infer<typeof spotifyRecentlyPlayedSchema>;
 
-export enum Type {
-	Artist = 'artist'
-}
+export const spotifyAudioFeaturesSchema = z
+	.object({
+		danceability: z.number(),
+		energy: z.number(),
+		key: z.number(),
+		loudness: z.number(),
+		mode: z.number(),
+		speechiness: z.number(),
+		acousticness: z.number(),
+		instrumentalness: z.number(),
+		liveness: z.number(),
+		valence: z.number(),
+		tempo: z.number(),
+		type: z.string(),
+		id: z.string(),
+		uri: z.string(),
+		track_href: z.string(),
+		analysis_url: z.string(),
+		duration_ms: z.number(),
+		time_signature: z.number()
+	})
+	.catchall(z.union([z.number(), z.string()]));
+export type SpotifyAudioFeatures = z.infer<typeof spotifyAudioFeaturesSchema>;
 
-export interface SpotifyTrack {
-	album: SpotifyAlbum;
-	artists: Artist[];
-	available_markets: string[];
-	disc_number: number;
-	duration_ms: number;
-	explicit: boolean;
-	external_ids: ExternalIDS;
-	external_urls: ExternalUrls;
-	href: string;
-	id: string;
-	is_local: boolean;
-	name: string;
-	popularity: number;
-	preview_url: string;
-	track_number: number;
-	type: string;
-	uri: string;
-}
+export const playlistTrackSchema = z.object({
+	href: z.string(),
+	total: z.number(),
+	added_at: z.string(),
+	added_by: spotifyProfileSchema,
+	is_local: z.boolean(),
+	track: spotifyTrackSchema
+});
+export type PlaylistTrack = z.infer<typeof playlistTrackSchema>;
 
-export interface SpotifyAlbum {
-	album_type: string;
-	artists: Artist[];
-	available_markets: string[];
-	external_urls: ExternalUrls;
-	href: string;
-	id: string;
-	images: SpotifyImage[];
-	name: string;
-	release_date: string;
-	release_date_precision: string;
-	total_tracks: number;
-	type: string;
-	uri: string;
-}
+export const spotifyPlaylistSchema = z.object({
+	collaborative: z.boolean(),
+	external_urls: externalUrlsSchema,
+	id: z.string(),
+	images: z.array(spotifyImageSchema),
+	name: z.string(),
+	public: z.string(),
+	snapshot_id: z.string(),
+	tracks: createSpotifyPaginatedResponseSchema(playlistTrackSchema),
+	type: z.string(),
+	uri: z.string(),
+	description: z.string(),
+	followers: followersSchema
+});
+export type SpotifyPlaylist = z.infer<typeof spotifyPlaylistSchema>;
 
-export interface Artist {
-	external_urls: ExternalUrls;
-	href: string;
-	id: string;
-	name: string;
-	type: string;
-	uri: string;
-}
-export interface ExternalIDS {
-	isrc: string;
-}
+export const disallowsSchema = z.object({
+	resuming: z.boolean()
+});
+export type Disallows = z.infer<typeof disallowsSchema>;
 
-export interface SpotifyContext {
-	external_urls: ExternalUrls;
-	href: string;
-	type: string;
-	uri: string;
-}
+export const actionsSchema = z.object({
+	disallows: disallowsSchema
+});
+export type Actions = z.infer<typeof actionsSchema>;
 
-export interface SpotifyCursor {
-	before: string;
-	after: string;
-}
-
-export interface SpotifyAudioFeatures {
-	danceability: number;
-	energy: number;
-	key: number;
-	loudness: number;
-	mode: number;
-	speechiness: number;
-	acousticness: number;
-	instrumentalness: number;
-	liveness: number;
-	valence: number;
-	tempo: number;
-	type: string;
-	id: string;
-	uri: string;
-	track_href: string;
-	analysis_url: string;
-	duration_ms: number;
-	time_signature: number;
-	[key: string]: number | string;
-}
-export interface PlaylistTrack {
-	href: string;
-	total: number;
-	added_at: string;
-	added_by: SpotifyProfile;
-	is_local: boolean;
-	track: SpotifyTrack;
-}
-
-export interface SpotifyPlaylist {
-	collaborative: boolean;
-	external_urls: ExternalUrls;
-	id: string;
-	images: SpotifyImage[];
-	name: string;
-	public: string;
-	snapshot_id: string;
-	tracks: SpotifyPaginatedResponse<PlaylistTrack>;
-	type: string;
-	uri: string;
-	description: string;
-	followers: Followers;
-}
-
-export interface SpotifyNowPlayingResponse {
-	timestamp: number;
-	context: SpotifyContext;
-	progress_ms: number;
-	item: SpotifyTrack;
-	currently_playing_type: string;
-	actions: Actions;
-	is_playing: boolean;
-}
-
-export interface Actions {
-	disallows: Disallows;
-}
-
-export interface Disallows {
-	resuming: boolean;
-}
+export const spotifyNowPlayingResponseSchema = z.object({
+	timestamp: z.number(),
+	context: spotifyContextSchema,
+	progress_ms: z.number(),
+	item: spotifyTrackSchema,
+	currently_playing_type: z.string(),
+	actions: actionsSchema,
+	is_playing: z.boolean()
+});
+export type SpotifyNowPlayingResponse = z.infer<
+	typeof spotifyNowPlayingResponseSchema
+>;
