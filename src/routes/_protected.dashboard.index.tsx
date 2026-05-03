@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { ExternalLink, Music, TrendingUp } from 'lucide-react';
 import { Button, buttonVariants } from '#/components/ui/button';
 import {
@@ -23,7 +23,7 @@ import {
 	millisToMinutesAndSeconds
 } from '#/lib/utils';
 
-export const Route = createFileRoute('/_protected/dashboard')({
+export const Route = createFileRoute('/_protected/dashboard/')({
 	loader: async () => getTopStats(),
 	component: RouteComponent
 });
@@ -37,11 +37,12 @@ function RouteComponent() {
 				<CardHeader>
 					<CardAction>
 						<Button
-							variant="ghost"
-							size="sm"
+							variant='ghost'
+							size='sm'
 							className="text-primary hover:text-primary/80"
+							asChild
 						>
-							See All
+							<Link to="/dashboard/artists">See All</Link>
 						</Button>
 					</CardAction>
 					<CardTitle className="flex items-center gap-2">
@@ -57,29 +58,29 @@ function RouteComponent() {
 							return (
 								<Item
 									key={artist.id}
-									variant="outline"
-									role="listitem"
+									variant='outline'
+									role='listitem'
 									render={
-										<a href="/">
+										<a href='/'>
 											{image && (
-												<ItemMedia variant="image">
+												<ItemMedia variant='image'>
 													<img
 														src={image.url}
 														alt={artist.name}
 														width={32}
 														height={32}
-														className="object-cover rounded-lg"
+														className='object-cover rounded-lg'
 													/>
 												</ItemMedia>
 											)}
 											<ItemContent>
-												<ItemTitle className="line-clamp-1">
+												<ItemTitle className='line-clamp-1'>
 													{artist.name}
 												</ItemTitle>
 												<ItemDescription className="line-clamp-1 text-xs">
 													<a
 														href={artist.external_urls.spotify}
-														target="_blank"
+														target='_blank'
 														className={cn(
 															buttonVariants({
 																variant: 'ghost',
@@ -102,7 +103,7 @@ function RouteComponent() {
 										</a>
 									}
 								/>
-							);
+							)
 						})}
 					</ItemGroup>
 				</CardContent>
@@ -114,11 +115,12 @@ function RouteComponent() {
 						Top Tracks
 					</CardTitle>
 					<Button
-						variant="ghost"
-						size="sm"
+						variant='ghost'
+						size='sm'
 						className="text-primary hover:text-primary/80"
+						asChild
 					>
-						See All
+						<Link to="/dashboard/artists">See All</Link>
 					</Button>
 				</CardHeader>
 				<CardContent>
@@ -126,29 +128,29 @@ function RouteComponent() {
 						{data.topTracks.items.map((track) => {
 							const artistNames = track.artists
 								.map((artist) => artist.name)
-								.join(', ');
+								.join(', ')
 							const image = getSmallestSpotifyImage(track.album.images);
 
 							return (
 								<Item
 									key={track.id}
-									variant="outline"
-									role="listitem"
+									variant='outline'
+									role='listitem'
 									render={
-										<a href="/">
+										<a href='/'>
 											{image && (
-												<ItemMedia variant="image">
+												<ItemMedia variant='image'>
 													<img
 														src={image.url}
-														alt={`${track.name} album art`}
+														alt={'${track.name} album art'}
 														width={32}
 														height={32}
-														className="object-cover rounded-lg"
+														className='object-cover rounded-lg'
 													/>
 												</ItemMedia>
 											)}
-											<ItemContent className="pr-2.5">
-												<ItemTitle className="line-clamp-1">
+											<ItemContent className='pr-2.5'>
+												<ItemTitle className='line-clamp-1'>
 													{track.name}
 												</ItemTitle>
 												<ItemDescription className="line-clamp-1 text-xs">
@@ -163,11 +165,11 @@ function RouteComponent() {
 										</a>
 									}
 								/>
-							);
+							)
 						})}
 					</ItemGroup>
 				</CardContent>
 			</Card>
 		</div>
-	);
+	)
 }
